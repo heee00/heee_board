@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>board</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+	<div class="container">
+		<h2>게시글 내용</h2>
+		<form id="frm" method="post">
+	    	<table class="board_detail">
+				<colgroup>
+					<col width="15%"/>
+					<col width="35%"/>
+					<col width="15%"/>
+					<col width="35%"/>
+				</colgroup>
+				<caption>게시글 상세내용</caption>
+				<tbody>
+					<tr>
+						<th scope="row">글 번호</th>
+						<td th:text="${board.boardId}"></td>
+						<th scope="row">조회수</th>
+						<td th:text="${board.views}"></td>
+					</tr>
+					<tr>
+						<th scope="row">작성자</th>
+						<td th:text="${board.writer}"></td>
+						<th scope="row">작성일</th>
+						<td th:text="${#temporals.format(board.writeTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+					</tr>
+					<tr>
+						<th scope="row">제목</th>
+						<td colspan="3" id="title" th:text="${board.title}"></td>
+					</tr>
+					<tr>
+						<th scope="row">내용</th>
+						<td colspan="4" class="view_text">
+							<textarea id="content" name="content" th:text="${board.content}" disabled></textarea>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<input type="hidden" id="boardId" name="boardId" th:value="${board.boardId}">
+        </form>
+
+        <input type="button" id="list" class="btn" value="목록">
+        <input type="button" id="delete" class="btn" style="float:right;" value="삭제">
+        <input type="button" id="edit" class="btn" style="float:right;" value="수정" >
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#list").on("click", function(){
+                    location.href = "list";
+                });
+                
+                $("#edit").on("click", function(){
+                	location.href = "update?boardId=" + $("#boardId").val();
+                });
+
+                $("#delete").on("click", function(){
+                	var result = confirm("게시글을 삭제하시겠습니까?");
+                	if(result) {
+                		var frm = $("#frm")[0];
+                    	frm.action = "delete";
+                    	frm.submit();
+                	} 
+                });
+            })
+        </script>
+        
+	</div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>board</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../css/style.css"></link>
+</head>
+<body>
+    <div class="container">
+        <h2>게시글 작성</h2>
+        <form id="frm" name="frm" method="post" action="/board/insert">
+            <table class="board_write">
+                <tr>
+               		<th scope="row">제목</th>
+                    <td colspan="3">
+                    	<input type="text" id="title" name="title" placeholder="제목을 입력하세요">
+                    </td>
+                </tr>
+                <tr>
+                	<th scope="row">내용</th>
+                    <td colspan="4">
+                        <textarea id="content" name="content" placeholder="내용을 입력하세요"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        
+        <input type="button" id="list" class="btn" value="목록">
+        <input type="submit" id="submit" value="저장" class="btn" style="float:right;">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#list").on("click", function(){
+                    location.href = "list";
+                });
+                
+                $("#submit").on("click", function(){
+                	var title = $("#title").val();
+                    var content = $("#content").val();
+                    
+                    if (title.trim() === '') {
+                    	alert("제목은 필수 입력 사항입니다.");
+                    	return;
+                    
+                    } else if(content.trim() === '') {
+                        alert("내용은 필수 입력 사항입니다.");
+                        return;
+                    }
+                	
+                	var frm = $("#frm")[0];
+                	frm.action = "insert";
+                	frm.submit();
+                });
+            })
+        </script>
+    </div>
+</body>
+</html>

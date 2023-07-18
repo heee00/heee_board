@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="heee.board.mapper.BoardMapper">
+	
+	<!-- 게시글 리스트 + 페이징 -->
+	<select id="getBoard" parameterType="heee.board.common.Pagination" resultType="heee.board.dto.BoardDTO"> 
+       <![CDATA[
+		    SELECT
+		        (ROW_NUMBER() OVER(ORDER BY board_id)) AS rownum,
+		        board_id,
+		        title,
+		        views,
+		        write_time
+		    FROM
+		        heee_board
+		    WHERE
+		        delete_check = 'N'
+		    ORDER BY board_id DESC
+		    LIMIT #{rowCount}
+		    OFFSET #{offset}
+	    ]]>
+	</select>
+	
+	<!-- 게시글 수 세기 -->
+	<select id="getCount" resultType="int">
+		SELECT 
+			COUNT(board_id) 
+		FROM 
+			heee_board
+		WHERE
+            delete_check = 'N'
+	</select>
+	
+	<!-- 게시글 리스트 + 페이징 -->
+	<select id="getBoardSearch" parameterType="heee.board.common.Pagination" resultType="heee.board.dto.BoardDTO"> 
+       <![CDATA[
+		    SELECT
+		        (ROW_NUMBER() OVER(ORDER BY board_id)) AS rownum,
+		        board_id,
+		        title,
+		        views,
+		        write_time
+		    FROM
+		        heee_board
+		    WHERE
+		        delete_check = 'N'
+		    AND 
+        		${searchType} LIKE CONCAT('%', #{searchName}, '%')
+		    ORDER BY board_id DESC
+		    LIMIT #{pagination.rowCount}
+		    OFFSET #{pagination.offset}
+	    ]]>
+	</select>
+	
+	<!-- 게시글 수 세기 -->
+	<select id="getSearchCount" resultType="int">
+		SELECT 
+			COUNT(board_id) 
+		FROM 
+			heee_board
+		WHERE
+            delete_check = 'N'
+        AND 
+        	${searchType} LIKE CONCAT('%', #{searchName}, '%')
+	</select>
+	
+	<!-- 게시글 상세 화면 -->
+	<select id="selectBoard" parameterType="int" resultType="heee.board.dto.BoardDTO">
+		<![CDATA[
+			SELECT
+				board_id, title, content, views, write_time, writer
+			FROM
+				heee_board
+			WHERE
+				board_id = ${boardId} AND delete_check = 'N'
+		]]>
+	</select>
+	
+	<!-- 게시글 작성 -->
+	<insert id="insertBoard" parameterType="heee.board.dto.BoardDTO">
+		<![CDATA[
+	       INSERT INTO heee_board
+	       (
+	       		title,
+	            content,
+	            write_time,
+	            writer
+	       )
+	       VALUES
+	       (
+	            #{title},
+	            #{content},
+	            CURRENT_TIMESTAMP,
+	            'admin'
+	       )
+		]]>
+	</insert>
+	
+	<!-- <insert id="insertFile" parameterType="heee.board.dto.FileDTO">
+		<![CDATA[
+			INSERT INTO heee_file
+	       	(
+	       		board_id,
+	       		file_name,
+	       		file_path,
+	       		file_size,
+	       		creator_id,
+	            create_time
+	       	)
+	       	VALUES 
+	     ]]>	
+	     <foreach collection="list" item="item" separator=",">
+	     (
+	     	#{item.boardId},
+	       	#{item.fileName},
+	       	#{item.filePath},
+	       	#{item.fileSize},
+	       	'admin',
+	       	CURRENT_TIMESTAMP
+	    )
+	    </foreach>
+	</insert> -->
+	
+	<!-- 게시글 조회수 증가 -->
+	<update id="viewCount" parameterType="int">
+		<![CDATA[
+			UPDATE 	
+				heee_board
+			SET
+				views = views + 1
+			WHERE
+				board_id = #{board_id}
+		]]>
+	</update>
+	
+	<!-- 게시글 수정 -->
+	<update id="updateBoard" parameterType="heee.board.dto.BoardDTO">
+        <![CDATA[
+            UPDATE 
+                heee_board 
+            SET
+                title = #{title},
+                content = #{content},
+                modify_time =  CURRENT_TIMESTAMP,
+                modifier = 'admin'
+            WHERE
+                board_id = #{boardId}
+        ]]>
+    </update>
+
+	<!-- 게시글 삭제 -->
+    <update id="deleteBoard" parameterType="int">
+        <![CDATA[
+            UPDATE
+                heee_board
+            SET
+                delete_check = 'Y',
+                modify_time =  CURRENT_TIMESTAMP,
+                modifier = 'admin'
+            WHERE
+                board_id = #{boardId}
+        ]]>
+    </update>
+</mapper>
