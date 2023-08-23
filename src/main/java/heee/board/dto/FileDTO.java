@@ -14,4 +14,5 @@ public class FileDTO {
 	private long fileSize;
 	private String creatorId;
 	private LocalDateTime createTime;
+	
 }

@@ -91,4 +91,5 @@ public class BoardController {
 		boardService.deleteBoard(boardId);
 		return "redirect:/board/list";
 	}
+	
 }

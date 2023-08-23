@@ -15,4 +15,5 @@ public class BoardDTO {
 	private String writer;
 	private LocalDateTime modifyTime;
 	private String modifier;
+	
 }
