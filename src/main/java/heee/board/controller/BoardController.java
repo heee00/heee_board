@@ -28,14 +28,15 @@ public class BoardController {
 					            @RequestParam(value = "page", defaultValue = "1") int page) throws Exception {
 		
 		Pagination pagination = new Pagination(boardService.getCount(), page); 
+		Pagination search = new Pagination(boardService.getSearchCount(searchType, searchName), page);
 		List<BoardDTO> list = boardService.getBoard(pagination);
 		ModelAndView mv = new ModelAndView("boardList");	
 	
 		if (!searchName.isEmpty()) {
 			// 검색 내용이 있는 경우
-		    pagination.setTotalCount(boardService.getSearchCount(searchType, searchName));
-		    pagination = new Pagination(pagination.getTotalCount(), page);
-		    list = boardService.getBoardSearch(searchType, searchName, pagination);
+		    search.setTotalCount(boardService.getSearchCount(searchType, searchName));
+		    search = new Pagination(search.getTotalCount(), page);
+		    list = boardService.getBoardSearch(searchType, searchName, search);
 		} else {
 		    // 검색 내용이 없는 경우
 		    pagination.setTotalCount(boardService.getCount());
