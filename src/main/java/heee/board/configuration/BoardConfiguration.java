@@ -26,20 +26,20 @@ public class BoardConfiguration {
 	@Autowired
     private ApplicationContext applicationContext;
 
-	@Bean
-	@ConfigurationProperties(prefix="spring.datasource.hikari")
-	public HikariConfig hikariConfig() {
-		return new HikariConfig();
-	}
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.hikari")
+    HikariConfig hikariConfig() {
+        return new HikariConfig();
+    }
 	
 	@Bean
     @ConfigurationProperties(prefix="mybatis.configuration")
-    public org.apache.ibatis.session.Configuration mybatisConfig() {
+    org.apache.ibatis.session.Configuration mybatisConfig() {
         return new org.apache.ibatis.session.Configuration();
     }
 	
 	@Bean
-	public DataSource dataSource() throws Exception{
+	DataSource dataSource() throws Exception{
 		DataSource dataSource = new HikariDataSource(hikariConfig());
 		System.out.println(dataSource.toString());
 		
@@ -47,12 +47,12 @@ public class BoardConfiguration {
 	}
 	
 	@Bean
-	public PlatformTransactionManager transactionManager() throws Exception {
+	PlatformTransactionManager transactionManager() throws Exception {
 		return new DataSourceTransactionManager(dataSource());
 	}
 	
 	@Bean(name = "sqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+    SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
         sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources("classpath:/mapper/BoardMapper.xml"));
@@ -62,7 +62,8 @@ public class BoardConfiguration {
     }
 
     @Bean(name = "sqlSessionTemplate")
-    public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
+    SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
+    
 }
